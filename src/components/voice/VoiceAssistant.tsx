@@ -2,15 +2,20 @@ import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Volume2, VolumeX, RotateCcw, X } from 'lucide-react'
 import { personal } from '../../data/portfolio'
+import { useSpeaking } from '../../context/SpeakingContext'
 
 export default function VoiceAssistant() {
   const [active, setActive] = useState(false)
   const [muted, setMuted] = useState(false)
-  const [speaking, setSpeaking] = useState(false)
+  const [speaking, setSpeakingLocal] = useState(false)
   const [currentLine, setCurrentLine] = useState(0)
   const [dismissed, setDismissed] = useState(false)
   const utterRef = useRef<SpeechSynthesisUtterance | null>(null)
   const hasSpoken = useRef(false)
+  const { setSpeaking, setCurrentLine: setCtxLine } = useSpeaking()
+
+  // Keep context in sync
+  const setSpeaking2 = (v: boolean) => { setSpeakingLocal(v); setSpeaking(v) }
 
   const speak = () => {
     if (!('speechSynthesis' in window) || muted) return
@@ -35,23 +40,23 @@ export default function VoiceAssistant() {
     utter.volume = 0.9
 
     let lineIdx = 0
+    utter.onstart = () => { setSpeaking2(true); setCurrentLine(0); setCtxLine(0) }
+    utter.onend = () => { setSpeaking2(false); setCurrentLine(0); setCtxLine(0) }
+    utter.onerror = () => setSpeaking2(false)
     utter.onboundary = (e) => {
       if (e.name === 'sentence') {
         lineIdx = Math.min(lineIdx + 1, personal.voiceScript.length - 1)
         setCurrentLine(lineIdx)
+        setCtxLine(lineIdx)
       }
     }
-
-    utter.onstart = () => { setSpeaking(true); setCurrentLine(0) }
-    utter.onend = () => { setSpeaking(false); setCurrentLine(0) }
-    utter.onerror = () => setSpeaking(false)
 
     window.speechSynthesis.speak(utter)
   }
 
   const stop = () => {
     window.speechSynthesis.cancel()
-    setSpeaking(false)
+    setSpeaking2(false)
   }
 
   // Auto-start after 2s on page load

@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Navbar from './components/ui/Navbar'
-import CustomCursor from './components/ui/CustomCursor'
 import LoadingScreen from './components/ui/LoadingScreen'
 import Hero from './sections/Hero'
 import About from './sections/About'
 import Projects from './sections/Projects'
 import Education from './sections/Education'
 import Contact from './sections/Contact'
+import { SpeakingProvider } from './context/SpeakingContext'
 
 function Footer() {
   return (
@@ -52,7 +52,7 @@ export default function App() {
   const [loaded, setLoaded] = useState(false)
 
   return (
-    <>
+    <SpeakingProvider>
       <LoadingScreen onDone={() => setLoaded(true)} />
 
       <AnimatePresence>
@@ -63,7 +63,6 @@ export default function App() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
           >
-            <CustomCursor />
             <ScrollProgress />
             <Navbar />
             <main>
@@ -81,6 +80,6 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+    </SpeakingProvider>
   )
 }

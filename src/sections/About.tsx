@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { MapPin, GraduationCap, Code2, Shield, Cpu } from 'lucide-react'
 import { personal, skills } from '../data/portfolio'
+import aboutBoy from '../assets/about-boy.png'
 
 const SKILL_CATEGORIES = ['frontend', 'backend', 'database', 'tools'] as const
 type Category = typeof SKILL_CATEGORIES[number]
@@ -85,15 +86,53 @@ export default function About() {
           </h2>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-start">
-          {/* Left — Bio */}
+        {/* Top: Boy character + Bio side by side */}
+        <div className="grid lg:grid-cols-2 gap-16 items-center mb-16">
+          {/* Left — 3D Boy Character */}
+          <motion.div
+            initial={{ opacity: 0, x: -40, scale: 0.9 }}
+            animate={inView ? { opacity: 1, x: 0, scale: 1 } : {}}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            className="flex justify-center relative"
+          >
+            {/* Glowing backdrop */}
+            <div
+              style={{
+                position: 'absolute',
+                width: '320px',
+                height: '320px',
+                borderRadius: '50%',
+                background: 'radial-gradient(circle, rgba(110,231,247,0.15) 0%, rgba(181,106,255,0.10) 60%, transparent 100%)',
+                filter: 'blur(40px)',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                zIndex: 0,
+              }}
+            />
+            <motion.img
+              src={aboutBoy}
+              alt="About me character"
+              animate={{ y: [0, -14, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+              style={{
+                width: '380px',
+                maxWidth: '90vw',
+                position: 'relative',
+                zIndex: 1,
+                filter: 'drop-shadow(0 20px 60px rgba(110,231,247,0.25))',
+              }}
+            />
+          </motion.div>
+
+          {/* Right — Bio */}
           <div className="space-y-6">
             {personal.bio.map((para, i) => (
               <motion.p
                 key={i}
-                initial={{ opacity: 0, x: -20 }}
+                initial={{ opacity: 0, x: 20 }}
                 animate={inView ? { opacity: 1, x: 0 } : {}}
-                transition={{ delay: 0.1 * i + 0.2, duration: 0.6 }}
+                transition={{ delay: 0.1 * i + 0.3, duration: 0.6 }}
                 className="text-[var(--muted)] leading-relaxed text-base"
               >
                 {para}
@@ -129,52 +168,51 @@ export default function About() {
               ))}
             </motion.div>
           </div>
-
-          {/* Right — Skills */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={inView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.3, duration: 0.7 }}
-          >
-            {/* Category tabs */}
-            <div className="flex flex-wrap gap-2 mb-8">
-              {SKILL_CATEGORIES.map(cat => (
-                <button
-                  key={cat}
-                  onClick={() => setActiveTab(cat)}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 capitalize ${
-                    activeTab === cat
-                      ? 'text-[#050510] scale-105'
-                      : 'glass text-[var(--muted)] hover:text-[var(--text)]'
-                  }`}
-                  style={activeTab === cat ? { background: 'linear-gradient(135deg, #6ee7f7, #b56aff)' } : {}}
-                >
-                  {categoryIcons[cat]}
-                  {cat}
-                </button>
-              ))}
-            </div>
-
-            {/* Skill bars */}
-            <div className="space-y-5">
-              {skills[activeTab].map((skill, i) => (
-                <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={i * 0.08} />
-              ))}
-            </div>
-
-            {/* Tech tag cloud */}
-            <div className="mt-10 flex flex-wrap gap-2">
-              {['React', 'TypeScript', 'Python', 'Java', 'PostgreSQL', 'Docker', 'AWS', 'MongoDB', 'Git', 'Blockchain', 'Solidity', 'Node.js'].map(tag => (
-                <span
-                  key={tag}
-                  className="glass text-xs px-3 py-1.5 rounded-full text-[var(--muted)] hover:text-[var(--neon)] hover:border-[var(--neon)] transition-all cursor-default"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          </motion.div>
         </div>
+
+        {/* Bottom — Skills full width */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ delay: 0.4, duration: 0.7 }}
+        >
+          {/* Category tabs */}
+          <div className="flex flex-wrap gap-2 mb-8">
+            {SKILL_CATEGORIES.map(cat => (
+              <button
+                key={cat}
+                onClick={() => setActiveTab(cat)}
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 capitalize ${
+                  activeTab === cat
+                    ? 'text-[#050510] scale-105'
+                    : 'glass text-[var(--muted)] hover:text-[var(--text)]'
+                }`}
+                style={activeTab === cat ? { background: 'linear-gradient(135deg, #6ee7f7, #b56aff)' } : {}}
+              >
+                {categoryIcons[cat]}
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-x-16 gap-y-5">
+            {skills[activeTab].map((skill, i) => (
+              <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={i * 0.08} />
+            ))}
+          </div>
+
+          {/* Tech tag cloud */}
+          <div className="mt-10 flex flex-wrap gap-2">
+            {['React', 'TypeScript', 'Python', 'Java', 'PostgreSQL', 'Docker', 'AWS', 'MongoDB', 'Git', 'Blockchain', 'Solidity', 'Node.js'].map(tag => (
+              <span
+                key={tag}
+                className="glass text-xs px-3 py-1.5 rounded-full text-[var(--muted)] hover:text-[var(--neon)] hover:border-[var(--neon)] transition-all cursor-default"
+              >
+                {tag}
+              </span>
+            ))}
+          </div>
+        </motion.div>
       </motion.div>
     </section>
   )

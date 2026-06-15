@@ -31,11 +31,12 @@ export const personal = {
     'Writing clean, efficient code',
   ],
   voiceScript: [
-    "Hello, and welcome to my digital portfolio.",
-    "I'm Tharun Kumar S, a Full Stack Developer and Software Engineer passionate about building beautiful, scalable, and user-friendly applications.",
-    "My expertise includes React, Java, Python, AWS, Docker, and Artificial Intelligence.",
-    "Explore my projects, technical skills, and professional journey right here.",
-    "Thank you for visiting. Let's build something great together."
+    "Hi! I'm Tharun Kumar, a Full Stack Developer passionate about building modern, responsive, and user-friendly web applications.",
+    "I'm currently pursuing my B.E in Computer Science and Engineering at Sri Shakthi Institute of Engineering, specialising in Cyber Security.",
+    "My technical skills span React, Python, Java, Node.js, PostgreSQL, Docker, and AWS — covering the full stack from pixel-perfect frontends to scalable backends.",
+    "I've built projects like Alumni Connect — an ML-powered student networking platform — Safe Pipe, an AI-powered secret leak detection tool for CI/CD pipelines, and VoteChain, a blockchain-based voting system.",
+    "I'm deeply interested in Web Development, Cyber Security, Blockchain, and Artificial Intelligence.",
+    "Thank you for visiting my portfolio. Let's build something amazing together!"
   ]
 };
 

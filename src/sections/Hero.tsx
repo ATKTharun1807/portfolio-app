@@ -4,7 +4,6 @@ import { Mail, Download, ChevronDown, ExternalLink } from 'lucide-react'
 import { GithubIcon, LinkedinIcon } from '../components/ui/BrandIcons'
 import { personal } from '../data/portfolio'
 import HeroCanvas from '../components/three/HeroCanvas'
-import VoiceAssistant from '../components/voice/VoiceAssistant'
 
 function useTypingEffect(texts: string[]) {
   const [state, setState] = useState({ idx: 0, text: '', deleting: false })
@@ -207,8 +206,6 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* Voice Assistant */}
-      <VoiceAssistant />
 
       {/* Scroll indicator */}
       <motion.button
