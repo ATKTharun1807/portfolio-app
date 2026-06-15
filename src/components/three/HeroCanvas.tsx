@@ -1,6 +1,6 @@
 import { Canvas } from '@react-three/fiber'
 import { PerspectiveCamera } from '@react-three/drei'
-import { Suspense, useEffect, useRef } from 'react'
+import { Suspense, useEffect, useRef, useState } from 'react'
 import { motion, useMotionValue, useSpring } from 'framer-motion'
 import ParticleField from './ParticleField'
 import introVideo from '../../assets/my-intro.mp4'
@@ -8,39 +8,12 @@ import introVideo from '../../assets/my-intro.mp4'
 /* ─────────────────────────────────────────────
    INLINE SVG ICONS
 ───────────────────────────────────────────── */
-const ReactIcon = () => (
-  <svg viewBox="0 0 40 40" width="22" height="22">
-    <circle cx="20" cy="20" r="4" fill="#61DAFB"/>
-    <ellipse cx="20" cy="20" rx="18" ry="7" fill="none" stroke="#61DAFB" strokeWidth="2"/>
-    <ellipse cx="20" cy="20" rx="18" ry="7" fill="none" stroke="#61DAFB" strokeWidth="2" transform="rotate(60 20 20)"/>
-    <ellipse cx="20" cy="20" rx="18" ry="7" fill="none" stroke="#61DAFB" strokeWidth="2" transform="rotate(120 20 20)"/>
-  </svg>
-)
 const PythonIcon = () => (
   <svg viewBox="0 0 40 40" width="22" height="22">
     <path d="M20 4c-4 0-8 1-8 5v4h8v2H8c-3 0-6 2-6 8s3 8 6 8h3v-5c0-3 2-5 5-5h8c3 0 5-2 5-5V9c0-3-3-5-9-5z" fill="#4B8BBE"/>
     <path d="M20 36c4 0 8-1 8-5v-4h-8v-2h12c3 0 6-2 6-8s-3-8-6-8h-3v5c0 3-2 5-5 5h-8c-3 0-5 2-5 5v8c0 3 3 5 9 5z" fill="#FFE873"/>
     <circle cx="15" cy="11" r="2" fill="#fff"/>
     <circle cx="25" cy="29" r="2" fill="#fff"/>
-  </svg>
-)
-const JavaIcon = () => (
-  <svg viewBox="0 0 40 40" width="22" height="22">
-    <text x="4" y="28" fontSize="26" fontWeight="bold" fill="#F89820">J</text>
-    <text x="18" y="28" fontSize="26" fontWeight="bold" fill="#5382A1">v</text>
-  </svg>
-)
-const JSIcon = () => (
-  <svg viewBox="0 0 40 40" width="22" height="22">
-    <rect width="40" height="40" rx="6" fill="#F7DF1E"/>
-    <text x="6" y="30" fontSize="20" fontWeight="bold" fill="#000">JS</text>
-  </svg>
-)
-const CodeIcon = () => (
-  <svg viewBox="0 0 40 40" width="22" height="22" fill="none" stroke="#6ee7f7" strokeWidth="2.5" strokeLinecap="round">
-    <polyline points="12,14 4,20 12,26"/>
-    <polyline points="28,14 36,20 28,26"/>
-    <line x1="22" y1="10" x2="18" y2="30"/>
   </svg>
 )
 const EditorIcon = () => (
@@ -199,6 +172,31 @@ export default function HeroCanvas({ className }: HeroCanvasProps) {
   const springX = useSpring(rawX, { stiffness: 50, damping: 15 })
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
+  const [isMuted, setIsMuted] = useState(false)
+
+  // Sync mute state with video element
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.muted = isMuted
+    }
+  }, [isMuted])
+
+  // Play video on first user interaction if blocked by autoplay policies
+  useEffect(() => {
+    const handleInteraction = () => {
+      if (videoRef.current) {
+        videoRef.current.play().catch(() => {})
+      }
+      window.removeEventListener('click', handleInteraction)
+      window.removeEventListener('touchstart', handleInteraction)
+    }
+    window.addEventListener('click', handleInteraction)
+    window.addEventListener('touchstart', handleInteraction)
+    return () => {
+      window.removeEventListener('click', handleInteraction)
+      window.removeEventListener('touchstart', handleInteraction)
+    }
+  }, [])
 
   // Mouse parallax
   useEffect(() => {
@@ -250,11 +248,7 @@ export default function HeroCanvas({ className }: HeroCanvasProps) {
         <FloatOrb x="44%" y="54%" size={11} delay={1.4} />
         <FloatOrb x="92%" y="48%" size={17} delay={0.5} />
 
-        {/* Tech badges */}
-        <TechBadge icon={<ReactIcon />}   label="React"  x="3%"  y="12%" delay={0.6} floatY={12} />
-        <TechBadge icon={<CodeIcon />}    label="</>"    x="3%"  y="38%" delay={0.9} floatY={10} />
-        <TechBadge icon={<JavaIcon />}                   x="3%"  y="60%" delay={1.1} floatY={9}  />
-        <TechBadge icon={<JSIcon />}      label="JS"     x="3%"  y="80%" delay={1.3} floatY={8}  />
+
 
         {/* ── Video background (right half) ── */}
         <div style={{
@@ -297,7 +291,7 @@ export default function HeroCanvas({ className }: HeroCanvasProps) {
           <video
             ref={videoRef}
             src={introVideo}
-            muted
+            muted={isMuted}
             loop
             playsInline
             autoPlay
@@ -307,6 +301,42 @@ export default function HeroCanvas({ className }: HeroCanvasProps) {
               display: 'block',
             }}
           />
+
+          {/* 🔊 Unmute button — browsers block audio autoplay, user must click */}
+          <motion.button
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 1.2, duration: 0.4 }}
+            onClick={() => {
+              setIsMuted(m => !m)
+            }}
+            title={isMuted ? 'Click to unmute' : 'Click to mute'}
+            style={{
+              position: 'absolute', bottom: '12%', right: '6%', zIndex: 10,
+              display: 'flex', alignItems: 'center', gap: 8,
+              background: isMuted ? 'rgba(10,10,28,0.85)' : 'linear-gradient(135deg, rgba(110,231,247,0.25), rgba(181,106,255,0.2))',
+              border: isMuted ? '1.5px solid rgba(255,255,255,0.2)' : '1.5px solid rgba(110,231,247,0.6)',
+              borderRadius: 30, padding: '9px 16px',
+              cursor: 'pointer', backdropFilter: 'blur(12px)',
+              boxShadow: isMuted ? '0 4px 20px rgba(0,0,0,0.5)' : '0 4px 24px rgba(110,231,247,0.3)',
+              color: '#fff', fontSize: 13, fontWeight: 600,
+              fontFamily: 'Inter, sans-serif',
+              transition: 'all 0.3s ease',
+              pointerEvents: 'all',
+            }}
+          >
+            {/* Animated sound icon */}
+            <motion.span
+              animate={isMuted ? {} : { scale: [1, 1.2, 1] }}
+              transition={{ duration: 0.8, repeat: Infinity }}
+              style={{ fontSize: 16, lineHeight: 1 }}
+            >
+              {isMuted ? '🔇' : '🔊'}
+            </motion.span>
+            <span style={{ color: isMuted ? 'rgba(255,255,255,0.7)' : '#6ee7f7' }}>
+              {isMuted ? 'Tap to hear me' : 'Playing audio'}
+            </span>
+          </motion.button>
 
           {/* Tech badges on video side */}
           <motion.div style={{ position: 'absolute', inset: 0, zIndex: 6, x: springX }}>
