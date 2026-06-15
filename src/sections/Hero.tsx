@@ -43,7 +43,7 @@ export default function Hero() {
     <section
       id="hero"
       className="relative min-h-screen flex items-center overflow-hidden"
-      style={{ background: 'linear-gradient(180deg, #050510 0%, #080818 60%, #050510 100%)' }}
+      style={{ background: 'linear-gradient(180deg, var(--bg) 0%, var(--bg2) 60%, var(--bg) 100%)' }}
     >
       {/* 3D Canvas background */}
       <div className="absolute inset-0">
@@ -54,7 +54,7 @@ export default function Hero() {
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse 65% 90% at 28% 50%, rgba(5,5,16,0) 0%, rgba(5,5,16,0.88) 100%)',
+          background: 'radial-gradient(ellipse 65% 90% at 28% 50%, rgba(5,5,16,0) 0%, var(--bg-radial) 100%)',
         }}
       />
 

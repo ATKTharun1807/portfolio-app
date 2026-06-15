@@ -126,7 +126,7 @@ export default function VoiceAssistant() {
             if (speaking) { stop() } else { speak() }
           }}
           className="relative w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:scale-110"
-          style={{ background: speaking ? 'linear-gradient(135deg, #6ee7f7, #b56aff)' : 'rgba(255,255,255,0.05)' }}
+          style={{ background: speaking ? 'linear-gradient(135deg, #6ee7f7, #b56aff)' : 'var(--bg2)' }}
           title={speaking ? 'Pause voice' : 'Play voice intro'}
         >
           {speaking ? (
@@ -134,7 +134,7 @@ export default function VoiceAssistant() {
               {Array.from({ length: 3 }).map((_, i) => (
                 <motion.div
                   key={i}
-                  className="w-0.5 bg-[#050510] rounded-full"
+                  className="w-0.5 bg-[var(--bg)] rounded-full"
                   animate={{ height: ['3px', `${6 + i * 2}px`, '3px'] }}
                   transition={{ repeat: Infinity, duration: 0.4 + i * 0.1, ease: 'easeInOut' }}
                 />

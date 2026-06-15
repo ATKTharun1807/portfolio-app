@@ -13,6 +13,28 @@
     --amber: #fbbf24;
     --pink: #f472b6;
     --gradient: linear-gradient(135deg, #6ee7f7, #b56aff);
+    --nav-bg: rgba(5, 5, 16, 0.85);
+    --nav-border: rgba(255, 255, 255, 0.06);
+    --bg-radial: rgba(5, 5, 16, 0.88);
+    color-scheme: dark;
+  }
+
+  :root.light {
+    --bg: #f8fafc;
+    --bg2: #ffffff;
+    --bg3: #e2e8f0;
+    --text: #0f172a;
+    --muted: #64748b;
+    --neon: #00acc1;
+    --purple: #7e57c2;
+    --green: #2e7d32;
+    --amber: #f57f17;
+    --pink: #d81b60;
+    --gradient: linear-gradient(135deg, #00acc1, #7e57c2);
+    --nav-bg: rgba(248, 250, 252, 0.85);
+    --nav-border: rgba(0, 0, 0, 0.06);
+    --bg-radial: rgba(248, 250, 252, 0.88);
+    color-scheme: light;
   }
 
   * {
@@ -64,11 +86,24 @@
   border: 1px solid rgba(110, 231, 247, 0.1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s ease;
 }
 
 .glass:hover {
   border-color: rgba(110, 231, 247, 0.3);
   background: rgba(110, 231, 247, 0.05);
+}
+
+:root.light .glass {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 172, 193, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+:root.light .glass:hover {
+  border-color: rgba(0, 172, 193, 0.4);
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
 }
 
 /* ─── Neon glow shadow ─── */
@@ -125,7 +160,7 @@
 #custom-cursor {
   width: 12px;
   height: 12px;
-  background: #6ee7f7;
+  background: var(--neon);
   border-radius: 50%;
   position: fixed;
   pointer-events: none;
@@ -137,11 +172,20 @@
 #cursor-ring {
   width: 36px;
   height: 36px;
-  border: 1.5px solid rgba(110, 231, 247, 0.5);
+  border: 1.5px solid var(--neon);
   border-radius: 50%;
   position: fixed;
   pointer-events: none;
   z-index: 9998;
   transform: translate(-50%, -50%);
   transition: left 0.12s ease, top 0.12s ease, width 0.3s ease, height 0.3s ease;
+  opacity: 0.5;
+}
+
+:root.light #custom-cursor {
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+}
+:root.light #cursor-ring {
+  opacity: 0.35;
 }

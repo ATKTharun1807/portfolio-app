@@ -44,11 +44,11 @@ export default function Education() {
                       style={{
                         background: edu.status === 'current'
                           ? 'linear-gradient(135deg, #6ee7f7, #b56aff)'
-                          : 'rgba(255,255,255,0.05)',
+                          : 'var(--bg2)',
                         border: edu.status === 'current' ? 'none' : '1px solid rgba(110,231,247,0.2)',
                       }}
                     >
-                      <div className={`w-2 h-2 rounded-full ${edu.status === 'current' ? 'bg-[#050510]' : 'bg-[var(--muted)]'}`} />
+                      <div className={`w-2 h-2 rounded-full ${edu.status === 'current' ? 'bg-[var(--bg)]' : 'bg-[var(--muted)]'}`} />
                     </div>
 
                     <div className="glass rounded-2xl p-5">

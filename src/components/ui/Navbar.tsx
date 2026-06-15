@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X } from 'lucide-react'
+import { Menu, X, Sun, Moon } from 'lucide-react'
 import { GithubIcon, LinkedinIcon } from './BrandIcons'
 import { personal } from '../../data/portfolio'
 
@@ -31,6 +31,24 @@ export default function Navbar() {
   const [active, setActive] = useState('#hero')
   const [open, setOpen] = useState(false)
   const clock = useClock()
+  const [theme, setTheme] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('theme') || 'dark'
+    }
+    return 'dark'
+  })
+
+  useEffect(() => {
+    const root = document.documentElement
+    if (theme === 'light') {
+      root.classList.add('light')
+    } else {
+      root.classList.remove('light')
+    }
+    localStorage.setItem('theme', theme)
+  }, [theme])
+
+  const toggleTheme = () => setTheme(prev => prev === 'light' ? 'dark' : 'light')
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 30)
@@ -54,10 +72,10 @@ export default function Navbar() {
         className="fixed top-0 left-0 right-0 z-40 transition-all duration-300"
         style={{
           background: scrolled
-            ? 'rgba(5,5,16,0.85)'
+            ? 'var(--nav-bg)'
             : 'transparent',
           backdropFilter: scrolled ? 'blur(20px)' : 'none',
-          borderBottom: scrolled ? '1px solid rgba(255,255,255,0.06)' : '1px solid transparent',
+          borderBottom: scrolled ? '1px solid var(--nav-border)' : '1px solid transparent',
         }}
       >
         <div className="max-w-7xl mx-auto px-6 lg:px-12 h-16 flex items-center justify-between">
@@ -98,6 +116,16 @@ export default function Navbar() {
               className="text-[var(--muted)] hover:text-[var(--purple)] transition-colors">
               <LinkedinIcon size={17} />
             </a>
+
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-xl text-[var(--muted)] hover:text-[var(--text)] hover:bg-white/5 transition-all cursor-pointer"
+              title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+            >
+              {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+            </button>
+
             <button
               onClick={() => handleNav('#contact')}
               className="text-xs px-4 py-2 rounded-full font-semibold text-[#050510] transition-all hover:scale-105"
@@ -107,13 +135,22 @@ export default function Navbar() {
             </button>
           </div>
 
-          {/* Mobile hamburger */}
-          <button
-            className="md:hidden text-[var(--muted)] hover:text-[var(--text)] transition-colors"
-            onClick={() => setOpen(o => !o)}
-          >
-            {open ? <X size={22} /> : <Menu size={22} />}
-          </button>
+          {/* Mobile hamburger & toggle */}
+          <div className="flex items-center gap-2 md:hidden">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-xl text-[var(--muted)] hover:text-[var(--text)] transition-colors"
+              title={theme === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
+            >
+              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
+            <button
+              className="text-[var(--muted)] hover:text-[var(--text)] transition-colors"
+              onClick={() => setOpen(o => !o)}
+            >
+              {open ? <X size={22} /> : <Menu size={22} />}
+            </button>
+          </div>
         </div>
       </motion.nav>
 
@@ -125,7 +162,11 @@ export default function Navbar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             className="fixed top-16 left-0 right-0 z-30 px-6 py-4"
-            style={{ background: 'rgba(5,5,16,0.95)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}
+            style={{ 
+              background: 'var(--nav-bg)', 
+              backdropFilter: 'blur(20px)', 
+              borderBottom: '1px solid var(--nav-border)' 
+            }}
           >
             <div className="flex flex-col gap-2">
               {NAV_LINKS.map(link => (
